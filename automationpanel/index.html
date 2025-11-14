@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dynamic Dashboard & Task Automation Panel</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar collapsed" id="sidebar">
+      <div class="sidebar-toggle" onclick="toggleSidebar()">
+        <span aria-label="Open sidebar">&#9776;</span>
+      </div>
+      <nav>
+        <ul>
+          <li class="active" onclick="showSection('dashboard')"><span>Dashboard</span></li>
+          <li onclick="showSection('users')"><span>Users</span></li>
+          <li onclick="showSection('tasks')"><span>Tasks</span></li>
+          <li onclick="showSection('settings')"><span>Settings</span></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Navbar -->
+      <header class="navbar">
+        <div class="search-bar">
+          <input type="text" id="global-search" placeholder="Search..." tabindex="1">
+        </div>
+        <div class="navbar-icons">
+          <span class="notification" tabindex="2" aria-label="Notifications">&#128276;</span>
+          <div class="profile-dropdown" tabindex="3" onclick="toggleProfileDropdown()">
+            <span class="profile-avatar">AD</span>
+            <ul id="profile-menu" class="hidden">
+              <li>Profile</li>
+              <li>Logout</li>
+            </ul>
+          </div>
+        </div>
+        <button id="theme-toggle" onclick="toggleTheme()">Light/Dark</button>
+      </header>
+
+      <!-- Dashboard Section -->
+      <section id="dashboard-section">
+        <!-- Statistic Cards -->
+        <div class="stats-cards">
+          <div class="card">
+            <h3>Total Users</h3>
+            <p id="total-users">-</p>
+          </div>
+          <div class="card">
+            <h3>Active Tasks</h3>
+            <p id="active-tasks">-</p>
+          </div>
+          <div class="card">
+            <h3>Completed Tasks</h3>
+            <p id="completed-tasks">-</p>
+          </div>
+        </div>
+        <!-- CSS-based Responsive Chart UI -->
+        <div class="chart-section">
+          <h3>Activity Overview</h3>
+          <div class="chart" id="chart-container">
+            <div class="bar" style="--value:70;">Feb</div>
+            <div class="bar" style="--value:50;">Mar</div>
+            <div class="bar" style="--value:90;">Apr</div>
+            <div class="bar" style="--value:60;">May</div>
+            <div class="bar" style="--value:80;">Jun</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Users Section -->
+      <section id="users-section" class="hidden">
+        <h2>Users</h2>
+        <div class="user-table-section">
+          <div class="table-controls">
+            <input type="text" id="user-search" placeholder="Search Users...">
+            <button onclick="sortUsers('asc')" aria-label="Sort ascending">Sort A-Z</button>
+            <button onclick="sortUsers('desc')" aria-label="Sort descending">Sort Z-A</button>
+          </div>
+          <table id="user-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Company</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- API Data Here -->
+            </tbody>
+          </table>
+          <div class="pagination" id="pagination"></div>
+        </div>
+      </section>
+
+      <!-- Tasks Section -->
+      <section id="tasks-section" class="hidden">
+        <h2>Task Automation Panel</h2>
+        <button onclick="openTaskModal()">Add Task</button>
+        <div class="task-filters">
+          <select id="priority-filter" onchange="filterTasks()">
+            <option value="">All Priorities</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+          <select id="status-filter" onchange="filterTasks()">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="inprogress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+          <button onclick="filterUpcoming()" aria-label="Upcoming Deadline">Upcoming</button>
+        </div>
+        <div id="task-list">
+          <!-- Dynamic Task Items -->
+        </div>
+      </section>
+
+      <!-- Settings Section -->
+      <section id="settings-section" class="hidden">
+        <h2>Settings</h2>
+        <p>Customize your dashboard here. (Extend as needed.)</p>
+      </section>
+    </div>
+  </div>
+
+  <!-- Modal for Task Add/Edit -->
+  <div id="task-modal" class="modal hidden" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeTaskModal()">&times;</span>
+      <h3 id="modal-title">Add Task</h3>
+      <form id="task-form" onsubmit="return saveTask(event)">
+        <input type="hidden" id="task-id" />
+        <label>Title: <input type="text" id="task-title" required></label>
+        <label>Description: <textarea id="task-desc" required></textarea></label>
+        <label>Priority:
+          <select id="task-priority" required>
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </label>
+        <label>Deadline: <input type="date" id="task-deadline" required></label>
+        <label>Status:
+          <select id="task-status" required>
+            <option value="pending">Pending</option>
+            <option value="inprogress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+        </label>
+        <button type="submit">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden" role="alert"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
